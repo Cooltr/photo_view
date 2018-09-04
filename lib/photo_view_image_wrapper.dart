@@ -17,6 +17,7 @@ class PhotoViewImageWrapper extends StatefulWidget{
     this.backgroundColor,
     this.gaplessPlayback = false,
     this.heroTag,
+    this.isZooming
   }) : super(key:key);
 
   final Function onDoubleTap;
@@ -29,6 +30,7 @@ class PhotoViewImageWrapper extends StatefulWidget{
   final bool gaplessPlayback;
   final Size size;
   final String heroTag;
+  final Function isZooming;
 
   @override
   State<StatefulWidget> createState() {
@@ -97,6 +99,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper> with Tick
       final double scaleComebackRatio = minScale / _scale;
       animateScale(_scale, minScale);
       animatePosition(_position, clampPosition(_position * scaleComebackRatio, maxScale));
+      widget.isZooming(false);
     }
   }
 

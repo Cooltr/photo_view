@@ -91,6 +91,7 @@ class PhotoView extends StatefulWidget{
     this.gaplessPlayback = false,
     this.size,
     this.heroTag,
+    this.isZooming
   }) : super(key: key);
 
   /// Given a [imageProvider] it resolves into an zoomable image widget using. It
@@ -127,6 +128,8 @@ class PhotoView extends StatefulWidget{
   /// Assists the activation of a hero animation within [PhotoView]
   final Object heroTag;
 
+  final Function(bool isZooming) isZooming;
+
   @override
   State<StatefulWidget> createState() {
     return new _PhotoViewState();
@@ -159,12 +162,30 @@ class _PhotoViewState extends State<PhotoView>{
     setState(() {
       _scaleState = nextScaleState(_scaleState);
     });
+
+    isZooming();
   }
 
   void onStartPanning () {
     setState(() {
       _scaleState = PhotoViewScaleState.zooming;
     });
+
+    isZooming(true);
+  }
+
+  void isZooming([bool zoom]) {
+    if(widget.isZooming != null) {
+      if(zoom != null) {
+        widget.isZooming(zoom);
+      } else {
+        if(_scaleState != PhotoViewScaleState.contained) {
+          widget.isZooming(true);
+        } else {
+          widget.isZooming(false);
+        }
+      }
+    }
   }
 
   @override
@@ -202,6 +223,7 @@ class _PhotoViewState extends State<PhotoView>{
     return PhotoViewImageWrapper(
       onDoubleTap: onDoubleTap,
       onStartPanning: onStartPanning,
+      isZooming: isZooming,
       imageProvider: widget.imageProvider,
       imageInfo: info,
       scaleState: _scaleState,
